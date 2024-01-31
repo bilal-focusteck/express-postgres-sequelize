@@ -1,7 +1,7 @@
 const express = require("express");
 const cors = require("cors");
 const cookieParser = require('cookie-parser');
-const { PORT } = require("./src/config/config")
+const { PORT } = require("./src/dbConfig/config")
 
 const app = express();
 
