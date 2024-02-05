@@ -22,13 +22,7 @@ const signup = async (req, res) => {
     };
     const user = await User.create(data);
     if (user) {
-      // let token = jwt.sign({ id: user.id }, APP_SECRET, {
-      //   expiresIn: 1 * 24 * 60 * 60 * 1000,
-      // });
-
-      // res.cookie("jwt", token, { maxAge: 1 * 24 * 60 * 60, httpOnly: true });
       console.log("user", JSON.stringify(user, null, 2));
-      //send users details
       return res.status(201).send(user);
     } else {
       console.log("inside of the else in try block");
@@ -58,7 +52,6 @@ const login = async (req, res) => {
         res.cookie("jwt", token, { maxAge: 1 * 24 * 60 * 60, httpOnly: true });
         console.log("user after cookie", JSON.stringify(user, null, 2));
         console.log(token);
-        //send user data
         return res.status(201).send(user);
       } else {
         return res.status(401).send({ error: "Authentication failed. Password is not correct" });
