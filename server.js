@@ -1,7 +1,9 @@
 const express = require("express");
 const cors = require("cors");
 const cookieParser = require('cookie-parser');
+require("./src/database/models/index")
 const { PORT } = require("./src/dbConfig/config")
+const userRoutes = require("./src/modules/users/user.routes");
 
 const app = express();
 
@@ -20,7 +22,14 @@ app.use(express.urlencoded({ extended: true }));
 app.get("/", (req, res) => {
   res.json({ status: 200, message: "Welcome to backend boilerplate" });
 });
-console.log("port is: ", PORT)
+
+//routes for the user API
+app.use('/api/users', userRoutes)
+
+
 app.listen(PORT, () => {
+  //creating model if not created already, if created then do nothing
+  // db.db.sequelize.sync();
+
   console.log(`Server is running on port ${PORT}.`);
 });
