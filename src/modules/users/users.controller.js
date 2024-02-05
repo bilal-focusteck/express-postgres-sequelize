@@ -3,11 +3,7 @@ const db = require("../../database/models/index");
 const jwt = require("jsonwebtoken");
 const { APP_SECRET } = require("../../dbConfig/config");
 
-// Assigning users to the variable User
 const User = db.db.users;
-
-//signing a user up
-//hashing users password before its saved to the database with bcrypt
 const signup = async (req, res) => {
   try {
     console.log("in try block of sign up")
