@@ -30,7 +30,7 @@ const signup = async (req, res) => {
       //   expiresIn: 1 * 24 * 60 * 60 * 1000,
       // });
 
-      res.cookie("jwt", token, { maxAge: 1 * 24 * 60 * 60, httpOnly: true });
+      // res.cookie("jwt", token, { maxAge: 1 * 24 * 60 * 60, httpOnly: true });
       console.log("user", JSON.stringify(user, null, 2));
       //send users details
       return res.status(201).send(user);
@@ -45,49 +45,74 @@ const signup = async (req, res) => {
 
 const login = async (req, res) => {
   try {
-    console.log("inside of the login function")
+    console.log("inside of the login function try block")
     const { email, hashedPassword } = req.body;
     console.log("request body is: ", req.body);
-
-    //find a user by their email
     const user = await User.findOne({
       where: {
         email: email
       }
     });
-    console.log("user found: ", user);
-
-    //if user email is found, compare password with bcrypt
     if (user) {
       const isSame = await bcrypt.compare(hashedPassword, user.hashedPassword);
-
-      //if password is the same
-      //generate token with the user's id and the secretKey in the env file
-
       if (isSame) {
         let token = jwt.sign({ id: user.id }, APP_SECRET, {
           expiresIn: 1 * 24 * 60 * 60 * 1000,
         });
-
-        //if password matches wit the one in the database
-        //go ahead and generate a cookie for the user
         res.cookie("jwt", token, { maxAge: 1 * 24 * 60 * 60, httpOnly: true });
         console.log("user after cookie", JSON.stringify(user, null, 2));
         console.log(token);
         //send user data
         return res.status(201).send(user);
       } else {
-        return res.status(401).send("Authentication 1 failed.");
+        return res.status(401).send({ error: "Authentication failed. Password is not correct" });
       }
     } else {
-      return res.status(401).send("Authentication failed. User does not exist");
+      return res.status(401).send({ error: "Authentication failed. User does not exist" });
     }
   } catch (error) {
     console.log(error);
   }
 };
 
+const deleteUser = async (req, res) => {
+  try {
+    console.log("sdkjnckjsdnc", req.query);
+    const userIdToDelete = req.query.id;
+    console.log("userIdToDelete from delete function is: ", userIdToDelete);
+    const userToDelete = await User.findByPk(userIdToDelete);
+    if (!userToDelete) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+    await userToDelete.destroy();
+    res.clearCookie('jwt');
+    return res.status(200).json({ message: 'User deleted successfully' });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ error: 'Internal Server Error' });
+  }
+};
+const updateUser = async (req, res) => {
+  console.log("edit user function from user controller file");
+  try {
+    console.log("request query is: ", req.query);
+    const userIdToUpdate = req.query.id;
+    console.log("userIdToDelete from delete is: ", userIdToUpdate);
+    const userToUpdate = await User.findByPk(userIdToUpdate);
+    if (!userToUpdate) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+    const updatedUserData = req.body;
+    await userToUpdate.update(updatedUserData);
+    return res.status(200).json({ message: 'User updated successfully' });
+  } catch (error) {
+    return res.status(500).json({ error: error });
+  }
+}
+
 module.exports = {
   signup,
   login,
+  deleteUser,
+  updateUser
 };

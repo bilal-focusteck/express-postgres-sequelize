@@ -3,7 +3,7 @@ const cors = require("cors");
 const cookieParser = require('cookie-parser');
 require("./src/database/models/index")
 const { PORT } = require("./src/dbConfig/config")
-const userRoutes = require("./src/modules/users/user.routes");
+const userRoutes = require("./src/modules/users/users.routes");
 
 const app = express();
 
