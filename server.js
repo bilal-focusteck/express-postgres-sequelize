@@ -4,6 +4,8 @@ const cookieParser = require('cookie-parser');
 require("./src/database/models/index")
 const { PORT } = require("./src/dbConfig/config")
 const userRoutes = require("./src/modules/users/users.routes");
+const rolesRoutes = require("./src/modules/roles/roles.routes");
+const user_rolesRoutes = require("./src/modules/users_roles/users_roles.routes");
 
 const app = express();
 
@@ -25,9 +27,13 @@ app.get("/", (req, res) => {
 
 //routes for the user API
 app.use('/api/users', userRoutes)
+app.use('/api/roles', rolesRoutes)
+app.use('/api/users_roles', user_rolesRoutes);
+
 
 
 app.listen(PORT, () => {
+  // dbConnection.dbConnection();
   //creating model if not created already, if created then do nothing
   // db.db.sequelize.sync();
 

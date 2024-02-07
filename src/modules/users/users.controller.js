@@ -4,6 +4,8 @@ const jwt = require("jsonwebtoken");
 const { APP_SECRET } = require("../../dbConfig/config");
 
 const User = db.db.users;
+const UsersRoles = db.db.users_rolesModel;
+
 const signup = async (req, res) => {
   try {
     console.log("in try block of sign up")
@@ -73,6 +75,7 @@ const deleteUser = async (req, res) => {
     if (!userToDelete) {
       return res.status(404).json({ error: 'User not found' });
     }
+    // await UsersRoles.destroy({ where: { userId: userIdToDelete } });
     await userToDelete.destroy();
     res.clearCookie('jwt');
     return res.status(200).json({ message: 'User deleted successfully' });
