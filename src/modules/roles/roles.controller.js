@@ -1,6 +1,6 @@
 const db = require("../../database/models/index");
 const roles = db.db.roles;
-const UsersRoles = db.db.users_rolesModel;
+const UsersRoles = db.db.users_roles;
 
 module.exports = {
   async createRole(req, res) {
@@ -23,7 +23,7 @@ module.exports = {
       if (!roleToDelete) {
         return res.status(404).json({ error: 'Role does not exist' });
       }
-      // await UsersRoles.destroy({ where: { roleId: roleIdToDelete } });
+      await UsersRoles.destroy({ where: { roleId: roleIdToDelete } });
       await roleToDelete.destroy();
       res.clearCookie('jwt');
       return res.status(200).json({ message: 'Role deleted successfully' });

@@ -4,7 +4,7 @@ const jwt = require("jsonwebtoken");
 const { APP_SECRET } = require("../../dbConfig/config");
 
 const User = db.db.users;
-const UsersRoles = db.db.users_rolesModel;
+const UsersRoles = db.db.users_roles;
 
 const signup = async (req, res) => {
   try {
@@ -32,6 +32,7 @@ const signup = async (req, res) => {
     }
   } catch (error) {
     console.log("error from catch block of sign up controller", error);
+    return res.status(500).json({ error: "Internal Server Error" });
   }
 };
 
@@ -66,6 +67,16 @@ const login = async (req, res) => {
   }
 };
 
+const logoutUser = async (req, res) => {
+  try {
+    res.clearCookie('jwt');
+    return res.status(200).json({ message: 'Logout successfully' });
+  } catch (error) {
+    console.error("error in logout user: ", error);
+    return res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+
 const deleteUser = async (req, res) => {
   try {
     console.log("sdkjnckjsdnc", req.query);
@@ -75,7 +86,7 @@ const deleteUser = async (req, res) => {
     if (!userToDelete) {
       return res.status(404).json({ error: 'User not found' });
     }
-    // await UsersRoles.destroy({ where: { userId: userIdToDelete } });
+    await UsersRoles.destroy({ where: { userId: userIdToDelete } });
     await userToDelete.destroy();
     res.clearCookie('jwt');
     return res.status(200).json({ message: 'User deleted successfully' });
@@ -102,9 +113,45 @@ const updateUser = async (req, res) => {
   }
 }
 
+const getAllUsers = async (req, res) => {
+  try {
+    console.log("hello from get all users");
+    const allUsers = await User.findAll();
+    return res.status(200).json(allUsers);
+  } catch (error) {
+    console.error("error in getting all users: ", error);
+    res.status(500).json({ error: "Internal Server Error in getting all users." })
+  }
+}
+
+const getUserById = async (req, res) => {
+  try {
+    const userId = req.query.id;
+    const user = await User.findOne(
+      {
+        where: {
+          id: userId
+        }
+      }
+    )
+    if (user) {
+      return res.status(200).json(user);
+    }
+    else {
+      return res.status(401).json({ error: "User not found." });
+    }
+  } catch (error) {
+    console.error("error found in getting a single user: ", error);
+    res.status(500).json({ error: "Internal Server Error." });
+  }
+}
+
 module.exports = {
   signup,
   login,
+  logoutUser,
   deleteUser,
-  updateUser
+  updateUser,
+  getAllUsers,
+  getUserById,
 };
