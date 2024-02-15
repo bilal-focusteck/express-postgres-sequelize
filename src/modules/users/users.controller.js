@@ -55,27 +55,28 @@ const login = async (req, res) => {
           expiresIn: 1 * 24 * 60 * 60 * 1000,
         });
         res.cookie("jwt", token, { maxAge: 1 * 24 * 60 * 60, httpOnly: true });
-        console.log("user after cookie", JSON.stringify(user, null, 2));
+        // console.log("user after cookie", JSON.stringify(user, null, 2));
         console.log(token);
-        return res.status(201).send(user);
+        return res.status(201).json({ status: "success", statusCode: 201, data: user });
       } else {
-        return res.status(401).send({ error: "Authentication failed. Password is not correct" });
+        return res.status(401).send({ status: "error", statusCode: 401, error: "Authentication failed. Password is not correct" });
       }
     } else {
-      return res.status(401).send({ error: "Authentication failed. User does not exist" });
+      return res.status(401).json({ status: "error", statusCode: 401, error: "Authentication failed. User does not exist" });
     }
   } catch (error) {
     console.log(error);
+    return res.status(500).json({ status: "error", statusCode: 500, error: "Internal Server Error" });
   }
 };
 
 const logoutUser = async (req, res) => {
   try {
     res.clearCookie('jwt');
-    return res.status(200).json({ message: 'Logout successfully' });
+    return res.status(200).json({ status: "success", statusCode: 200, message: 'Logout successfully' });
   } catch (error) {
     console.error("error in logout user: ", error);
-    return res.status(500).json({ error: "Internal Server Error" });
+    return res.status(500).json({ status: "error", statusCode: 500, error: "Internal Server Error" });
   }
 };
 
@@ -86,15 +87,15 @@ const deleteUser = async (req, res) => {
     console.log("userIdToDelete from delete function is: ", userIdToDelete);
     const userToDelete = await User.findByPk(userIdToDelete);
     if (!userToDelete) {
-      return res.status(404).json({ error: 'User not found' });
+      return res.status(404).json({ status: "error", statusCode: 404, error: 'User not found' });
     }
     await UsersRoles.destroy({ where: { userId: userIdToDelete } });
     await userToDelete.destroy();
     res.clearCookie('jwt');
-    return res.status(200).json({ message: 'User deleted successfully' });
+    return res.status(200).json({ status: "success", statusCode: 200, message: 'User deleted successfully' });
   } catch (error) {
     console.error(error);
-    return res.status(500).json({ error: 'Internal Server Error' });
+    return res.status(500).json({ status: "error", statusCode: 500, error: 'Internal Server Error' });
   }
 };
 const updateUser = async (req, res) => {
@@ -105,13 +106,13 @@ const updateUser = async (req, res) => {
     console.log("userIdToDelete from delete is: ", userIdToUpdate);
     const userToUpdate = await User.findByPk(userIdToUpdate);
     if (!userToUpdate) {
-      return res.status(404).json({ error: 'User not found' });
+      return res.status(404).json({ status: "error", statusCode: 404, error: 'User not found' });
     }
     const updatedUserData = req.body;
     await userToUpdate.update(updatedUserData);
-    return res.status(200).json({ message: 'User updated successfully' });
+    return res.status(200).json({ status: "success", statusCode: 200, message: 'User updated successfully' });
   } catch (error) {
-    return res.status(500).json({ error: error });
+    return res.status(500).json({ status: "error", statusCode: 500, error: error });
   }
 }
 
@@ -122,7 +123,7 @@ const getAllUsers = async (req, res) => {
     return res.status(200).json(allUsers);
   } catch (error) {
     console.error("error in getting all users: ", error);
-    res.status(500).json({ error: "Internal Server Error in getting all users." })
+    res.status(500).json({ status: "error", statusCode: 500, error: "Internal Server Error in getting all users." })
   }
 }
 
@@ -140,11 +141,11 @@ const getUserById = async (req, res) => {
       return res.status(200).json(user);
     }
     else {
-      return res.status(401).json({ error: "User not found." });
+      return res.status(401).json({ status: "error", statusCode: 401, error: "User not found." });
     }
   } catch (error) {
     console.error("error found in getting a single user: ", error);
-    res.status(500).json({ error: "Internal Server Error." });
+    res.status(500).json({ status: "error", statusCode: 500, error: "Internal Server Error." });
   }
 }
 

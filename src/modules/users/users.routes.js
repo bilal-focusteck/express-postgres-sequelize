@@ -15,7 +15,7 @@ router.post('/signUp', userAuth.saveUser, signup)
 router.post('/login', login)
 
 // logout User
-router.post('/logout', userAuth.verifyToken, logoutUser);
+router.post('/logout', logoutUser);
 
 // list of all users
 router.get('/get-all-users', getAllUsers);
