@@ -19,7 +19,8 @@ const saveUser = async (req, res, next) => {
       },
     });
     if (emailcheck || phonecheck) {
-      return res.status(409).send({ error: "Authentication failed. Email or contact already exist." });
+      // return res.status(409).send({ error: "Authentication failed. Email or contact already exist." });
+      return res.status(409).json({ status: "error", statusCode: 409, error: "Authentication failed. Email or contact already exist." });
     }
     else {
       next();
@@ -32,7 +33,7 @@ const saveUser = async (req, res, next) => {
 const verifyToken = (req, res, next) => {
   const token = req.headers.authorization && req.headers.authorization.split(' ')[1];
   if (!token) {
-    return res.status(401).json({ error: 'Unauthorized: No token provided' });
+    return res.status(401).json({ status: "error", statusCode: 401, error: 'Unauthorized: No token provided' });
   }
 
   try {
@@ -40,10 +41,10 @@ const verifyToken = (req, res, next) => {
     next();
   } catch (error) {
     if (error.name === 'TokenExpiredError') {
-      return res.status(401).json({ error: 'Unauthorized: Token expired' });
+      return res.status(401).json({ status: "error", statusCode: 401, error: 'Unauthorized: Token expired' });
     }
     else {
-      return res.status(401).json({ error: 'Unauthorized: Invalid token' });
+      return res.status(401).json({ status: "error", statusCode: 401, error: 'Unauthorized: Invalid token' });
     }
   }
 };

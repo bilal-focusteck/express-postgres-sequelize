@@ -25,14 +25,16 @@ const signup = async (req, res) => {
     const user = await User.create(data);
     if (user) {
       console.log("user", JSON.stringify(user, null, 2));
-      return res.status(201).send(user);
+      // return res.status(201).send(user);
+      return res.status(201).json({ status: "success", statusCode: 201, data: user });
     } else {
       console.log("inside of the else in try block");
-      return res.status(409).send({ error: "Authentication failed. Email or contact already exist." });
+      // return res.status(409).send({ error: "Authentication failed. Email or contact already exist." });
+      return res.status(409).json({ status: "error", statusCode: 409, error: "Authentication failed. Email or contact already exist." });
     }
   } catch (error) {
     console.log("error from catch block of sign up controller", error);
-    return res.status(500).json({ error: "Internal Server Error" });
+    return res.status(500).json({ status: "error", statusCode: 500, error: "Internal Server Error" });
   }
 };
 
