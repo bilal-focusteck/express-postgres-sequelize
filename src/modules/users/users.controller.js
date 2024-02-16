@@ -57,7 +57,7 @@ const login = async (req, res) => {
         res.cookie("jwt", token, { maxAge: 1 * 24 * 60 * 60, httpOnly: true });
         // console.log("user after cookie", JSON.stringify(user, null, 2));
         console.log(token);
-        return res.status(201).json({ status: "success", statusCode: 201, data: user });
+        return res.status(201).json({ status: "success", statusCode: 201, data: user, token: token });
       } else {
         return res.status(401).send({ status: "error", statusCode: 401, error: "Authentication failed. Password is not correct" });
       }
