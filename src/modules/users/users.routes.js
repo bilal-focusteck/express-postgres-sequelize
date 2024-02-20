@@ -24,7 +24,7 @@ router.get('/get-all-users', getAllUsers);
 router.get('/get-user-by-id', getUserById);
 
 //delete user route
-router.delete('/delete-user', userAuth.verifyToken, deleteUser)
+router.delete('/delete-user', deleteUser)
 
 // updating user's information
 router.patch('/update-user', userAuth.verifyToken, updateUser);
