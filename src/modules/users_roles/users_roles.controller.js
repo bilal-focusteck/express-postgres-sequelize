@@ -26,5 +26,23 @@ module.exports = {
       console.error(error);
       return res.status(500).json({ error: 'Internal Server Error' });
     }
+  },
+  async getAllUsersRoles(req, res) {
+    try {
+      const { userId } = req.params;
+
+      if (!userId) {
+        return res.status(400).json({ error: 'userId parameter is required.' });
+      }
+
+      const rolesForUser = await users_roles.findAll({
+        where: { userId: userId }
+      });
+
+      return res.status(200).json(rolesForUser);
+    } catch (error) {
+      console.error(error);
+      return res.status(500).json({ error: 'Internal Server Error' });
+    }
   }
 }

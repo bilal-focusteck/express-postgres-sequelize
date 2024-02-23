@@ -2,6 +2,7 @@ const bcrypt = require("bcrypt");
 const db = require("../../database/models/index");
 const jwt = require("jsonwebtoken");
 const { APP_SECRET } = require("../../dbConfig/config");
+const { sendEmail } = require("../../services/nodemailer");
 
 const User = db.db.users;
 const UsersRoles = db.db.users_roles;
@@ -25,7 +26,9 @@ const signup = async (req, res) => {
     const user = await User.create(data);
     if (user) {
       console.log("user", JSON.stringify(user, null, 2));
-      // return res.status(201).send(user);
+      const emailSubject = 'Welcome to Our Website!';
+      const emailText = `Hello ${user.firstName},\n\nThank you for signing up with us! We are excited to have you on board.\n\nBest regards,\nYour Team`;
+      await sendEmail(user.email, emailSubject, emailText);
       return res.status(201).json({ status: "success", statusCode: 201, data: user });
     } else {
       console.log("inside of the else in try block");

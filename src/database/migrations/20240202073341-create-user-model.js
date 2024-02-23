@@ -3,7 +3,9 @@ const { sequelize } = require("../models/index");
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
+    console.log("inside of up migration")
     try {
+      console.log("inside of try block of up migration")
       await queryInterface.createTable('users', {
         id: {
           type: Sequelize.UUID,
@@ -82,6 +84,7 @@ module.exports = {
   },
 
   async down(queryInterface, Sequelize) {
+    console.log("inside of down migration for creating user")
     try {
       await queryInterface.dropTable('users');
     } catch (error) {

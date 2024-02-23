@@ -17,6 +17,11 @@ const userModel = (sequelize) => {
         type: Sequelize.STRING,
         allowNull: true,
       },
+      status: {
+        type: Sequelize.ENUM('active', 'pending', 'deleted'),
+        defaultValue: 'active',
+        allowNull: false,
+      },
       gender: {
         type: Sequelize.STRING,
         allowNull: true,
